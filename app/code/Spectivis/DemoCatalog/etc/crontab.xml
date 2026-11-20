@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="spectivis_demo_catalog">
+        <job name="spectivis_demo_catalog_generate" instance="Spectivis\DemoCatalog\Cron\GenerateCatalog" method="execute">
+            <schedule>* * * * *</schedule>
+        </job>
+    </group>
+</config>
