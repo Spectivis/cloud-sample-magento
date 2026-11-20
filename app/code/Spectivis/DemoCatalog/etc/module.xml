@@ -8,6 +8,8 @@
             <module name="Magento_Inventory"/>
             <module name="Magento_UrlRewrite"/>
             <module name="Magento_Indexer"/>
+            <module name="Magento_Cms"/>
+            <module name="Magento_CatalogWidget"/>
         </sequence>
     </module>
 </config>

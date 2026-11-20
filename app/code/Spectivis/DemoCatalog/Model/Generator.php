@@ -15,6 +15,7 @@ use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Framework\Lock\LockManagerInterface;
 use Spectivis\DemoCatalog\Model\Setup\AttributeInstaller;
 use Spectivis\DemoCatalog\Model\Setup\CategoryInstaller;
+use Spectivis\DemoCatalog\Model\Setup\HomePageInstaller;
 use Spectivis\DemoCatalog\Model\Setup\ImageInstaller;
 
 /**
@@ -37,6 +38,7 @@ class Generator
         private readonly AttributeInstaller $attributeInstaller,
         private readonly CategoryInstaller $categoryInstaller,
         private readonly ImageInstaller $imageInstaller,
+        private readonly HomePageInstaller $homePageInstaller,
         private readonly ProductWriter $productWriter,
         private readonly ResourceConnection $resource,
         private readonly FlagManager $flagManager,
@@ -142,6 +144,9 @@ class Generator
         $flag['written_seconds'] = (int) ($flag['written_seconds'] ?? 0) + (int) (microtime(true) - $started);
         $this->flagManager->saveFlag(self::FLAG, $flag);
         $this->reindex($indexerMode, $log);
+        if ($this->homePageInstaller->install()) {
+            $log('home page: product grid added');
+        }
         $this->cacheManager->clean($this->cacheManager->getAvailableTypes());
         $flag['indexed_skus'] = $this->countSkus();
         $flag['indexed_at'] = gmdate('c');
