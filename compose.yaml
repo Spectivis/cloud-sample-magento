@@ -39,6 +39,8 @@ services:
   cron:
     <<: *app
     command: ["sh", "-c", "while :; do [ -f app/etc/env.php ] && php bin/magento cron:run; sleep 60; done"]
+    healthcheck:
+      disable: true
 
   db:
     image: mysql:8.4
