@@ -2,7 +2,6 @@
 # of Mage-OS in place (bin/, pub/, setup/, lib/, app/etc/di.xml and so on).
 /*
 !/.gitignore
-!/.dockerignore
 !/composer.json
 !/composer.lock
 !/README.md

@@ -1,0 +1,78 @@
+# Local development: MySQL, OpenSearch, Valkey, the store and its cron.
+#
+#   docker compose up -d --build
+#   docker compose exec app sh docker/install.sh
+#   docker compose exec app php bin/magento demo:catalog:generate
+#
+# The store is then on http://localhost:8080 and its admin on
+# http://localhost:8080/admin (admin / Admin12345demo).
+name: magento-demo
+
+x-app: &app
+  build: docker
+  image: magento-demo-dev
+  volumes:
+    - .:/app
+  environment:
+    DB_HOST: db
+    DB_DATABASE: magento
+    DB_USERNAME: magento
+    DB_PASSWORD: magento
+    OPENSEARCH_HOST: opensearch
+    REDIS_HOST: valkey
+    MAGENTO_BASE_URL: http://localhost:8080/
+    DEMO_CATALOG_SKUS: ${DEMO_CATALOG_SKUS:-50000}
+  depends_on:
+    db:
+      condition: service_healthy
+    opensearch:
+      condition: service_healthy
+    valkey:
+      condition: service_started
+
+services:
+  app:
+    <<: *app
+    ports:
+      - "8080:80"
+
+  cron:
+    <<: *app
+    command: ["sh", "-c", "while :; do [ -f app/etc/env.php ] && php bin/magento cron:run; sleep 60; done"]
+
+  db:
+    image: mysql:8.4
+    command: ["--log-bin-trust-function-creators=1", "--innodb-buffer-pool-size=1G"]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: magento
+      MYSQL_USER: magento
+      MYSQL_PASSWORD: magento
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-umagento", "-pmagento"]
+      interval: 5s
+      retries: 30
+
+  opensearch:
+    image: opensearchproject/opensearch:2
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      OPENSEARCH_JAVA_OPTS: -Xms1g -Xmx1g
+    volumes:
+      - opensearch:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf localhost:9200/_cluster/health"]
+      interval: 5s
+      retries: 30
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    command: ["valkey-server", "--maxmemory", "512mb", "--maxmemory-policy", "allkeys-lru", "--save", ""]
+
+volumes:
+  db:
+  opensearch:
