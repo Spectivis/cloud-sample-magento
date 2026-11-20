@@ -342,6 +342,7 @@ return [
         'MageOS_ThemeAdminhtmlSwitcher' => 1,
         'MageOS_ThemeOptimization' => 1,
         'MagoAssistant_Mago' => 1,
+        'Spectivis_CacheBackendName' => 1,
         'Spectivis_DemoCatalog' => 1,
         'Swissup_Ignition' => 1
     ],
