@@ -1,0 +1,25 @@
+# Only this project's own files are tracked. `composer install` puts the rest
+# of Mage-OS in place (bin/, pub/, setup/, lib/, app/etc/di.xml and so on).
+/*
+!/.gitignore
+!/.dockerignore
+!/composer.json
+!/composer.lock
+!/README.md
+!/LICENSE.txt
+!/LICENSE_AFL.txt
+!/compose.yaml
+!/docker/
+!/loadtest/
+
+!/app/
+/app/*
+!/app/code/
+!/app/etc/
+/app/etc/*
+!/app/etc/config.php
+
+# Written per environment (on Spectivis Cloud: at start, from variables).
+/app/etc/env.php
+/auth.json
+/loadtest/results/
