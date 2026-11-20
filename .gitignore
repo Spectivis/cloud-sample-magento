@@ -18,6 +18,18 @@
 /app/etc/*
 !/app/etc/config.php
 
+# Composer's home with its cache folder, made at build. Magento reads its
+# version through Composer (the admin dashboard does), and Composer makes these
+# folders if they are missing, which fails on a read-only image.
+!/var/
+/var/*
+!/var/composer_home/
+/var/composer_home/*
+!/var/composer_home/.htaccess
+!/var/composer_home/cache/
+/var/composer_home/cache/*
+!/var/composer_home/cache/.htaccess
+
 # Written per environment (on Spectivis Cloud: at start, from variables).
 /app/etc/env.php
 /auth.json
