@@ -29,6 +29,7 @@ The admin is at the address in `MAGENTO_ADMIN_PATH`, with `MAGENTO_ADMIN_USER` a
 | `DEMO_CATALOG_BATCH` | `2000` | SKUs per database transaction. |
 | `DEMO_CATALOG_RUN_SECONDS` | `240` | How long one cron run writes before leaving the rest to the next. |
 | `DEMO_CATALOG_INDEXER_MODE` | `schedule` | Indexer mode once the catalog is indexed: `schedule`, `realtime` or `keep`. |
+| `EDGE_CACHE_TTL` | `600` | Seconds a CDN may keep a cached page (see below). `0` sends Magento's usual `no-cache`. |
 
 ### What the repository holds
 
@@ -135,6 +136,19 @@ Page times from `pages.js` with 2 virtual users, 20 URLs per type, cache in Valk
 
 Without Valkey the caches go to `var/cache` and `var/page_cache`, 64 MB each on the platform. The crawler filled both in about a minute. Nothing fails after that: Magento stops caching new pages without logging anything, so every page not cached yet costs about 100 ms for good. With Valkey (512 MB, least recently used keys evicted) the same crawl used 416 MB.
 
+### Caching pages at the CDN
+
+Magento's built-in page cache answers in about 60 ms on the server, but it tells browsers and CDNs `no-cache` and sends a session cookie with every page, so each page view goes back to the origin. Far from the origin that costs most of a second: from India through Cloudflare, pages took 0.6 to 2 s to first byte while the server spent 60 to 80 ms on them.
+
+`Spectivis_EdgeCache` changes the headers of pages the built-in cache holds, for visitors without the `X-Magento-Vary` cookie (not logged in, default store and currency): `Cache-Control: public, max-age=0, s-maxage=600` and no `Set-Cookie`. Cart, checkout, account, search results and anything else Magento does not cache keep their `no-cache` headers. The cart in the header comes from `customer/section/load`, which stays private, as with Varnish.
+
+The CDN still has to be told to cache HTML. On Cloudflare, add a Cache Rule for the store's host name:
+
+- When: `http.host eq "store.example.com" and not http.cookie contains "X-Magento-Vary"`
+- Cache eligibility: Eligible for cache. Edge TTL: use cache-control header if present, bypass cache if not. Browser TTL: respect origin.
+
+Cloudflare is not purged when the catalog changes, so a change shows up within `EDGE_CACHE_TTL` seconds.
+
 ### Platform workarounds in this repository
 
 - `var/composer_home` (with its `cache` folder) is committed. Magento reads its own version through Composer, which makes that folder if it is missing; on a read-only image the admin dashboard failed with `mkdir(): Read-only file system`.
@@ -144,4 +158,4 @@ Both can go once the Magento preset writes `'backend' => 'redis'` and makes `var
 
 ## Licence
 
-Mage-OS is licensed under OSL-3.0 and AFL-3.0 (`LICENSE.txt`, `LICENSE_AFL.txt`). Hyvä is licensed under OSL-3.0. The `Spectivis_DemoCatalog`, `Spectivis_DemoStore` and `Spectivis_CacheBackendName` modules, the `Spectivis/demo` theme's own files, the load tests and the Docker files in this repository are released under the same two licences.
+Mage-OS is licensed under OSL-3.0 and AFL-3.0 (`LICENSE.txt`, `LICENSE_AFL.txt`). Hyvä is licensed under OSL-3.0. The `Spectivis_DemoCatalog`, `Spectivis_DemoStore`, `Spectivis_CacheBackendName` and `Spectivis_EdgeCache` modules, the `Spectivis/demo` theme's own files, the load tests and the Docker files in this repository are released under the same two licences.

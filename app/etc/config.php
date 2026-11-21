@@ -351,6 +351,7 @@ return [
         'Spectivis_CacheBackendName' => 1,
         'Spectivis_DemoCatalog' => 1,
         'Spectivis_DemoStore' => 1,
+        'Spectivis_EdgeCache' => 1,
         'Swissup_Ignition' => 1
     ],
     'system' => [
