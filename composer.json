@@ -9,6 +9,7 @@
     "config": {
         "allow-plugins": {
             "laminas/laminas-dependency-plugin": true,
+            "mage-os/composer-dependency-version-audit-plugin": false,
             "mage-os/*": true,
             "php-http/discovery": true
         },
