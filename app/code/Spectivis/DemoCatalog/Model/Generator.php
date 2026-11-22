@@ -32,12 +32,16 @@ class Generator
     public const RESULT_BUSY = 'busy';
 
     private const FLAG = 'spectivis_demo_catalog';
+
+    /** Version 2: Pixabay photos per subcategory instead of drawn shapes per department. */
+    private const IMAGES_VERSION = 2;
     private const LOCK = 'spectivis_demo_catalog';
 
     public function __construct(
         private readonly AttributeInstaller $attributeInstaller,
         private readonly CategoryInstaller $categoryInstaller,
         private readonly ImageInstaller $imageInstaller,
+        private readonly ImageRefresher $imageRefresher,
         private readonly HomePageInstaller $homePageInstaller,
         private readonly ProductWriter $productWriter,
         private readonly ResourceConnection $resource,
@@ -94,6 +98,16 @@ class Generator
                 $flag['seed'],
                 $seed
             ));
+        }
+        if ((int) ($flag['images'] ?? 1) < self::IMAGES_VERSION) {
+            if ($next > 0) {
+                $plan = new CatalogPlan($seed, max($targetSkus, $this->countSkus()));
+                $moved = $this->imageRefresher->refresh($plan, $this->imageInstaller->install(), $log);
+                $this->cacheManager->clean($this->cacheManager->getAvailableTypes());
+                $log(sprintf('images: %d products have their subcategory photo, caches cleaned', $moved));
+            }
+            $flag['images'] = self::IMAGES_VERSION;
+            $this->flagManager->saveFlag(self::FLAG, $flag);
         }
         if (($flag['indexed_skus'] ?? 0) >= $targetSkus) {
             return self::RESULT_DONE;
