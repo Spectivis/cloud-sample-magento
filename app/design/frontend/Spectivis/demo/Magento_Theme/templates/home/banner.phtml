@@ -1,0 +1,49 @@
+<?php
+/**
+ * Copyright Spectivis. Licensed under OSL-3.0 and AFL-3.0, as Mage-OS.
+ *
+ * The home page banner: a full-width photo with the store's line and two links.
+ */
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+?>
+<section class="relative isolate overflow-hidden bg-stone-900" aria-labelledby="home-banner-title">
+    <picture>
+        <source media="(min-width: 768px)" srcset="<?= $escaper->escapeUrl($block->getViewFileUrl('images/home/banner.jpg')) ?>">
+        <img
+            src="<?= $escaper->escapeUrl($block->getViewFileUrl('images/home/banner-small.jpg')) ?>"
+            alt=""
+            width="1920"
+            height="900"
+            fetchpriority="high"
+            class="absolute inset-0 -z-10 h-full w-full object-cover opacity-75"
+        >
+    </picture>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-black/70 via-black/35 to-transparent" aria-hidden="true"></div>
+    <div class="container py-24 md:py-36 lg:py-44">
+        <div class="max-w-xl text-white">
+            <p class="text-sm font-medium uppercase tracking-widest text-white/80">
+                <?= $escaper->escapeHtml(__('New season')) ?>
+            </p>
+            <h1 id="home-banner-title" class="mt-4 text-4xl font-semibold leading-tight text-balance md:text-6xl">
+                <?= $escaper->escapeHtml(__('Clothing and goods made for everyday use')) ?>
+            </h1>
+            <p class="mt-6 text-lg text-white/90 text-pretty">
+                <?= $escaper->escapeHtml(__('Thousands of pieces across eight departments, from linen shirts to camping gear.')) ?>
+            </p>
+            <p class="mt-10 flex flex-wrap gap-4">
+                <a class="btn btn-primary" href="<?= $escaper->escapeUrl($block->getUrl('', ['_direct' => 'women.html'])) ?>">
+                    <?= $escaper->escapeHtml(__('Shop women')) ?>
+                </a>
+                <a class="btn bg-white text-ink hover:bg-stone-100" href="<?= $escaper->escapeUrl($block->getUrl('', ['_direct' => 'men.html'])) ?>">
+                    <?= $escaper->escapeHtml(__('Shop men')) ?>
+                </a>
+            </p>
+        </div>
+    </div>
+</section>

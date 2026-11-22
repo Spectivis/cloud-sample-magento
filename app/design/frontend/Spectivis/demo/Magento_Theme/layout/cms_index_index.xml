@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--
+The demo store's home page: a banner, the departments and two product rows.
+It is built here rather than in the CMS page, so Tailwind sees every class it uses.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="hyva_product_slider"/>
+    <body>
+        <referenceBlock name="hero" remove="true"/>
+        <referenceBlock name="slider-1" remove="true"/>
+        <referenceBlock name="slider-2" remove="true"/>
+        <referenceBlock name="slider-3" remove="true"/>
+        <referenceBlock name="cms_page" remove="true"/>
+        <referenceContainer name="page.top">
+            <block name="demo.home.banner" template="Magento_Theme::home/banner.phtml" after="-"/>
+        </referenceContainer>
+        <referenceContainer name="content">
+            <block name="demo.home.departments" template="Magento_Theme::home/departments.phtml">
+                <arguments>
+                    <argument name="departments" xsi:type="object">Spectivis\DemoStore\ViewModel\Departments</argument>
+                </arguments>
+            </block>
+            <block name="demo.home.value" template="Magento_Catalog::product/slider/product-slider.phtml">
+                <arguments>
+                    <argument name="title" xsi:type="string" translate="true">Under $50</argument>
+                    <argument name="price_to" xsi:type="string">50</argument>
+                    <argument name="page_size" xsi:type="string">8</argument>
+                    <argument name="hide_rating_summary" xsi:type="boolean">true</argument>
+                </arguments>
+            </block>
+            <block name="demo.home.premium" template="Magento_Catalog::product/slider/product-slider.phtml">
+                <arguments>
+                    <argument name="title" xsi:type="string" translate="true">Premium picks</argument>
+                    <argument name="price_from" xsi:type="string">150</argument>
+                    <argument name="page_size" xsi:type="string">8</argument>
+                    <argument name="sort_attribute" xsi:type="string">price</argument>
+                    <argument name="sort_direction" xsi:type="string">DESC</argument>
+                    <argument name="hide_rating_summary" xsi:type="boolean">true</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceBlock name="page.main.title" remove="true"/>
+    </body>
+</page>

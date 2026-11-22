@@ -19,6 +19,8 @@
         }
     },
     "require": {
+        "hyva-themes/magento2-default-theme": "^1.5.4",
+        "hyva-themes/magento2-luma-checkout": "^1.1.7",
         "mage-os/composer-dependency-version-audit-plugin": "4.0.0",
         "mage-os/composer-root-update-plugin": "4.0.0",
         "mage-os/product-community-edition": "4.0.0"
@@ -57,6 +59,41 @@
         {
             "type": "composer",
             "url": "https://repo.mage-os.org/"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/hyva-themes/magento2-default-theme.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/hyva-themes/magento2-theme-module.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/hyva-themes/magento2-base-layout-reset.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/hyva-themes/magento2-email-module.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/hyva-themes/magento2-order-cancellation-webapi.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/hyva-themes/magento2-compat-module-fallback.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/hyva-themes/magento2-theme-fallback.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/hyva-themes/magento2-luma-checkout.git"
         }
-    ]
+    ],
+    "replace": {
+        "hyva-themes/magento2-mollie-theme-bundle": "*"
+    }
 }

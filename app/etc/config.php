@@ -326,6 +326,12 @@ return [
         'Creatuity_Interception' => 1,
         'Element119_CustomAdminLogo' => 1,
         'Elgentos_VarnishExtended' => 1,
+        'Hyva_Theme' => 1,
+        'Hyva_Email' => 1,
+        'Hyva_ThemeFallback' => 1,
+        'Hyva_OrderCancellationWebapi' => 1,
+        'Hyva_BaseLayoutReset' => 1,
+        'Hyva_LumaCheckout' => 1,
         'MageOS_AdminActivityLog' => 1,
         'MageOS_Seo' => 1,
         'MageOS_AiBase' => 1,
@@ -344,6 +350,7 @@ return [
         'MagoAssistant_Mago' => 1,
         'Spectivis_CacheBackendName' => 1,
         'Spectivis_DemoCatalog' => 1,
+        'Spectivis_DemoStore' => 1,
         'Swissup_Ignition' => 1
     ],
     'system' => [
@@ -463,6 +470,24 @@ return [
             'area' => 'frontend',
             'type' => '0',
             'code' => 'Magento/luma'
+        ],
+        'frontend/Hyva/default' => [
+            'parent_id' => null,
+            'theme_path' => 'Hyva/default',
+            'theme_title' => 'Hyvä Default',
+            'is_featured' => '0',
+            'area' => 'frontend',
+            'type' => '0',
+            'code' => 'Hyva/default'
+        ],
+        'frontend/Spectivis/demo' => [
+            'parent_id' => 'Hyva/default',
+            'theme_path' => 'Spectivis/demo',
+            'theme_title' => 'Spectivis Demo',
+            'is_featured' => '0',
+            'area' => 'frontend',
+            'type' => '0',
+            'code' => 'Spectivis/demo'
         ]
     ],
     'i18n' => [
