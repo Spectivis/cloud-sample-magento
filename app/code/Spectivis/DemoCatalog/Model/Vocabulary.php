@@ -213,12 +213,13 @@ class Vocabulary
         $departmentIndex = 0;
         foreach (self::DEPARTMENTS as $department => $data) {
             foreach ($data['children'] as $sub => $names) {
-                foreach ($names as $name) {
+                foreach ($names as $position => $name) {
                     [$leaf, $noun] = str_contains($name, '|') ? explode('|', $name, 2) : [$name, self::singular($name)];
                     $leaves[] = [
                         'department' => $department,
                         'departmentIndex' => $departmentIndex,
                         'sub' => $sub,
+                        'position' => $position,
                         'leaf' => $leaf,
                         'noun' => $noun,
                         'size' => in_array($sub, self::UNSIZED, true) ? null : $data['size'],

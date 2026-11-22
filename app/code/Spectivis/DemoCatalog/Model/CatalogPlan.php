@@ -19,7 +19,8 @@ namespace Spectivis\DemoCatalog\Model;
 class CatalogPlan
 {
     public const SKU_PREFIX = 'DC-';
-    public const IMAGES_PER_DEPARTMENT = 3;
+    /** Photos per subcategory: leaves 1-2 share the first, 3-4 the second, 5-6 the third. */
+    public const IMAGES_PER_SUBCATEGORY = 3;
 
     private const RELATED_PER_PRODUCT = 4;
 
@@ -81,20 +82,38 @@ class CatalogPlan
     }
 
     /**
-     * The image files, relative to pub/media/catalog/product, one set per department.
+     * The image files, relative to pub/media/catalog/product: three per
+     * subcategory, named after it.
      *
      * @return list<string>
      */
     public static function imageFiles(): array
     {
         $files = [];
-        foreach (array_keys(Vocabulary::DEPARTMENTS) as $department) {
-            for ($n = 1; $n <= self::IMAGES_PER_DEPARTMENT; $n++) {
-                $files[] = sprintf('/s/p/spectivis-demo-%s-%d.jpg', Vocabulary::slug($department), $n);
+        foreach (Vocabulary::DEPARTMENTS as $department => $data) {
+            foreach (array_keys($data['children']) as $sub) {
+                for ($n = 1; $n <= self::IMAGES_PER_SUBCATEGORY; $n++) {
+                    $files[] = self::imageFile($department, $sub, $n);
+                }
             }
         }
 
         return $files;
+    }
+
+    /**
+     * The image of a family's products. Every product of a family shares it.
+     */
+    public function imageOf(int $family): string
+    {
+        $leaf = $this->leaves[$this->families[$family]['leaf']];
+
+        return self::imageFile($leaf['department'], $leaf['sub'], intdiv($leaf['position'], 2) + 1);
+    }
+
+    private static function imageFile(string $department, string $sub, int $n): string
+    {
+        return sprintf('/s/p/spectivis-demo-%s-%s-%d.jpg', Vocabulary::slug($department), Vocabulary::slug($sub), $n);
     }
 
     /**
@@ -132,8 +151,10 @@ class CatalogPlan
             'size' => $sized ? $random->pick(Vocabulary::SIZES[$leaf['size']]) : null,
         ];
         $sku = self::sku($family);
-        $image = self::imageFiles()[$leaf['departmentIndex'] * self::IMAGES_PER_DEPARTMENT
-            + $random->int(0, self::IMAGES_PER_DEPARTMENT - 1)];
+        // This draw once chose the image. It stays so every later draw, and with
+        // it the rest of the catalog, comes out as before.
+        $random->int(0, 2);
+        $image = $this->imageOf($family);
         $description = $this->description($random, $name, $brand, $adjective, $material, $leaf, $features);
         $base = [
             'family' => $family,
