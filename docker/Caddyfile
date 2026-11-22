@@ -11,17 +11,20 @@
 	@denied path_regexp (?i)(^|/)[.](git|htaccess)|^/(app|var|setup)(/|$)
 	respond @denied 403
 
-	uri path_regexp ^/static/version[0-9]*/ /static/
-	@static_missing {
-		path_regexp static ^/static/(.*)$
-		not file
+	# route keeps this order: Caddy otherwise runs rewrite before uri.
+	route {
+		uri path_regexp ^/static/version[0-9]*/ /static/
+		@static_missing {
+			path_regexp static ^/static/(.*)$
+			not file
+		}
+		rewrite @static_missing /static.php?resource={re.static.1}
+		@media_missing {
+			path /media/*
+			not file
+		}
+		rewrite @media_missing /get.php?{query}
 	}
-	rewrite @static_missing /static.php?resource={re.static.1}
-	@media_missing {
-		path /media/*
-		not file
-	}
-	rewrite @media_missing /get.php?{query}
 
 	@php_in_files path /media/*.php /static/*.php
 	respond @php_in_files 403
