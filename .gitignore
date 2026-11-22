@@ -10,10 +10,12 @@
 !/compose.yaml
 !/docker/
 !/loadtest/
+!/scripts/
 
 !/app/
 /app/*
 !/app/code/
+!/app/design/
 !/app/etc/
 /app/etc/*
 !/app/etc/config.php
