@@ -4,8 +4,9 @@ A Mage-OS 4.0 store (the community distribution of Magento Open Source 2.4) with
 
 | Part | What it is |
 |---|---|
-| Store | Mage-OS 4.0 on PHP 8.4, stock Luma theme. No `repo.magento.com` keys needed. |
-| Catalog | `Spectivis_DemoCatalog` in `app/code`: 344 categories in three levels, six filterable attributes (brand, colour, size, material, pattern, season), simple products and configurable products with colour and size children, special prices, stock, related products and shared placeholder images. Brand names are invented. |
+| Store | Mage-OS 4.0 on PHP 8.4, dressed as Larkspur, a made-up clothing and goods shop. The theme is `Spectivis/demo`, a child of the free [Hyvä](https://hyva.io) theme, with Hyvä's Luma checkout fallback. No `repo.magento.com` keys needed. |
+| Catalog | `Spectivis_DemoCatalog` in `app/code`: 344 categories in three levels, six filterable attributes (brand, colour, size, material, pattern, season), simple products and configurable products with colour and size children, special prices, stock, related products and 144 shared product photos (three per subcategory). Brand names are invented. |
+| Look | `Spectivis_DemoStore` in `app/code` selects the theme and sets the store name, titles and footer line; the home page shows a banner, the departments and two product sliders. |
 | Load tests | k6 scripts in `loadtest/`: a shopper who buys, a crawler that walks filter combinations, and a page timer. |
 
 The store works with no mail server: two-factor auth is off, mail is disabled and admin passwords do not expire.
@@ -31,7 +32,7 @@ The admin is at the address in `MAGENTO_ADMIN_PATH`, with `MAGENTO_ADMIN_USER` a
 
 ### What the repository holds
 
-Only this project's files: `composer.json`, `composer.lock`, `app/etc/config.php`, `app/code` and an empty `var/composer_home`. `composer install` puts the rest of Mage-OS in place. The build compiles code and static files with no database, which is why `app/etc/config.php` lists the modules, scopes and themes (`bin/magento app:config:dump scopes themes i18n`). `app/etc/env.php` is not committed; the platform writes it at start from the environment's variables.
+Only this project's files: `composer.json`, `composer.lock`, `app/etc/config.php`, `app/code`, `app/design` and an empty `var/composer_home`. `composer install` puts the rest of Mage-OS in place. The build compiles code and static files with no database, which is why `app/etc/config.php` lists the modules, scopes and themes (`bin/magento app:config:dump scopes themes i18n`). `app/etc/env.php` is not committed; the platform writes it at start from the environment's variables.
 
 ## How the catalog is generated
 
@@ -43,6 +44,22 @@ Magento's own tools were the first choice and were set aside:
 - The import model (`Magento\ImportExport`) copies an image file for every product (sharing works only within one batch), and every product that points at an existing image logs a stack trace. On the platform `var/log` is a 64 MB scratch folder, so 50,000 products would fill it.
 
 Every product is worked out from the seed and its family number alone, so a batch can be written again in any order with the same result, and a run resumes from the highest SKU in the database. SKUs are `DC-000123` (a simple or configurable product) and `DC-000123-NAVY-M` (a child). Generated products can be edited and deleted in the admin like any other. The images are shared: removing an image from one product in the admin removes it from every product using it.
+
+Each product gets the photo of its subcategory and position, so a sneaker shows a sneaker. A store generated before the photos (each department had a few placeholder pictures) is moved over by the next cron run: it rewrites the image attributes and gallery rows of every `DC-` product in batches and deletes the old files. The flag `spectivis_demo_catalog` records that it is done.
+
+## Theme
+
+`app/design/frontend/Spectivis/demo` is a Hyvä child theme. Hyvä is free and open source (OSL-3.0) and installed from its public GitHub repositories, listed in `composer.json`; the Mollie bundle it suggests is replaced with nothing. Its CSS is built with Tailwind and committed as `web/css/styles.css`, because the platform build has no Node. After changing a template's classes or `web/tailwind`, rebuild it:
+
+```
+cd app/design/frontend/Spectivis/demo/web/tailwind
+npm ci
+npm run build
+```
+
+Then remove `pub/static/frontend` and flush the cache to see it locally.
+
+Photos are from [Pixabay](https://pixabay.com) under the Pixabay Content License; each file and its source are listed in `app/code/Spectivis/DemoCatalog/images/CREDITS.md` and `app/design/frontend/Spectivis/demo/web/images/CREDITS.md`.
 
 ## Run it locally
 
@@ -56,6 +73,16 @@ docker compose exec app php bin/magento demo:catalog:generate
 ```
 
 The store is on http://localhost:8080 and the admin on http://localhost:8080/admin (`admin` / `Admin12345demo`). `demo:catalog:generate --skus=5000` makes a smaller catalog; `demo:catalog:status` shows how far it has got. The `cron` service runs `bin/magento cron:run` every minute. Locally the store runs in default mode with the code mounted, so the first pages are slow while Magento compiles them.
+
+## Screenshots
+
+`scripts/screenshots.mjs` captures the home, category and product pages at desktop (1440×900) and mobile (390×844) sizes into `.screenshots/<label>/`. It needs the generated catalog with the default seed, and Playwright:
+
+```
+npm install --no-save playwright && npx playwright install chromium
+BASE_URL=http://localhost:8080 node scripts/screenshots.mjs after            # all pages
+BASE_URL=https://store.example.com node scripts/screenshots.mjs before home   # one page
+```
 
 ## Load tests
 
@@ -89,7 +116,7 @@ Measured with the Spectivis Cloud daemon's own build and run code (Magento prese
 | Generating 50,000 SKUs from cron | 2 min 58 s: products 58 s (about 1,000 SKUs a second), reindex 2 min |
 | Catalog | 32,524 products in the grid: 30,788 simple, 1,736 configurable with 17,476 children; 346 categories |
 | Database | 175 MB |
-| `pub/media` | 0.6 MB, 1.2 MB once the resized images are cached |
+| `pub/media` | 0.6 MB, 1.2 MB once the resized images are cached (measured with the earlier placeholder images; the photos add about 14 MB) |
 | OpenSearch index | 30,699 documents, 38 MB |
 | Memory | app 285 MB idle, 435 MB under the crawler; OpenSearch 1.6 GB (1 GB heap); MySQL 1.4 to 1.8 GB (1 GB buffer pool) |
 
@@ -117,4 +144,4 @@ Both can go once the Magento preset writes `'backend' => 'redis'` and makes `var
 
 ## Licence
 
-Mage-OS is licensed under OSL-3.0 and AFL-3.0 (`LICENSE.txt`, `LICENSE_AFL.txt`). The `Spectivis_DemoCatalog` and `Spectivis_CacheBackendName` modules, the load tests and the Docker files in this repository are released under the same two licences.
+Mage-OS is licensed under OSL-3.0 and AFL-3.0 (`LICENSE.txt`, `LICENSE_AFL.txt`). Hyvä is licensed under OSL-3.0. The `Spectivis_DemoCatalog`, `Spectivis_DemoStore` and `Spectivis_CacheBackendName` modules, the `Spectivis/demo` theme's own files, the load tests and the Docker files in this repository are released under the same two licences.
