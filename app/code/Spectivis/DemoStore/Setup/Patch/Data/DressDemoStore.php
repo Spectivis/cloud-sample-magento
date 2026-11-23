@@ -25,12 +25,12 @@ class DressDemoStore implements DataPatchInterface
     private const THEME = 'Spectivis/demo';
 
     private const SETTINGS = [
-        'general/store_information/name' => 'Larkspur',
-        'design/head/default_title' => 'Larkspur',
+        'general/store_information/name' => 'Harbour & Pine',
+        'design/head/default_title' => 'Harbour & Pine',
         'design/head/title_prefix' => '',
-        'design/head/title_suffix' => ' | Larkspur',
-        'design/header/logo_alt' => 'Larkspur',
-        'design/footer/copyright' => 'Larkspur is a demo store on Spectivis Cloud. Products, brands and prices are made up. Photos from Pixabay.',
+        'design/head/title_suffix' => ' | Harbour & Pine',
+        'design/header/logo_alt' => 'Harbour & Pine',
+        'design/footer/copyright' => 'Harbour & Pine is a demo store on Spectivis Cloud. Products, brands and prices are made up. Photos from Pixabay.',
         'hyva_theme_general/demo_content/show_homepage_demo_content' => '0',
     ];
 

@@ -13,4 +13,4 @@ free to use, no attribution required. They are credited here anyway. They are no
 | departments/home-and-living.jpg | LUM3N | https://pixabay.com/photos/read-sunday-bedroom-book-sleep-3667768/ |
 | departments/outdoor.jpg | bhossfeld | https://pixabay.com/photos/tent-camp-night-camping-stars-548022/ |
 | departments/sports-and-fitness.jpg | StockSnap | https://pixabay.com/photos/woman-yoga-stretching-meditation-2573216/ |
-| home/banner.jpg, home/banner-small.jpg | Pexels | https://pixabay.com/photos/hangers-clothing-shopping-market-1850082/ |
+| home/banner.jpg, home/banner-small.jpg | Pexels | https://pixabay.com/photos/adventure-man-mountain-outdoors-1850178/ |

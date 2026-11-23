@@ -4,9 +4,9 @@
         <referenceBlock name="logo">
             <arguments>
                 <argument name="logo_file" xsi:type="string">images/logo.svg</argument>
-                <argument name="logo_width" xsi:type="number">152</argument>
+                <argument name="logo_width" xsi:type="number">196</argument>
                 <argument name="logo_height" xsi:type="number">32</argument>
-                <argument name="logo_alt" xsi:type="string">Larkspur</argument>
+                <argument name="logo_alt" xsi:type="string">Harbour &amp; Pine</argument>
             </arguments>
         </referenceBlock>
     </body>

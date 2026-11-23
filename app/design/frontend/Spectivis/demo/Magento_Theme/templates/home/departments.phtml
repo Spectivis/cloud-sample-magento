@@ -28,7 +28,7 @@ if (!$list) {
         <?php foreach ($list as $department): ?>
             <li>
                 <a class="group block" href="<?= $escaper->escapeUrl($department['url']) ?>">
-                    <span class="block aspect-[4/5] overflow-hidden rounded-md bg-stone-200">
+                    <span class="block aspect-[4/5] overflow-hidden rounded-md bg-slate-200">
                         <?php if ($department['image']): ?>
                             <img
                                 src="<?= $escaper->escapeUrl($block->getViewFileUrl($department['image'])) ?>"

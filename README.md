@@ -1,10 +1,12 @@
 # Spectivis Cloud sample: Magento
 
+This branch, `brand-harbour-pine`, is the Harbour & Pine dressing of the same store: a made-up homeware and outdoor goods shop in navy, amber and a cool off-white. Only the theme's colours, logo, home banner and store name differ from `main` (Larkspur).
+
 A Mage-OS 4.0 store (the community distribution of Magento Open Source 2.4) with a generated catalog of 50,000 SKUs, for testing Spectivis Cloud with a store the size of a real one: build time, first install, page speed, search, cron, cache and bot traffic.
 
 | Part | What it is |
 |---|---|
-| Store | Mage-OS 4.0 on PHP 8.4, dressed as Larkspur, a made-up clothing and goods shop. The theme is `Spectivis/demo`, a child of the free [Hyvä](https://hyva.io) theme, with Hyvä's Luma checkout fallback. No `repo.magento.com` keys needed. |
+| Store | Mage-OS 4.0 on PHP 8.4, dressed as Harbour & Pine, a made-up homeware and outdoor goods shop. The theme is `Spectivis/demo`, a child of the free [Hyvä](https://hyva.io) theme, with Hyvä's Luma checkout fallback. No `repo.magento.com` keys needed. |
 | Catalog | `Spectivis_DemoCatalog` in `app/code`: 344 categories in three levels, six filterable attributes (brand, colour, size, material, pattern, season), simple products and configurable products with colour and size children, special prices, stock, related products and 144 shared product photos (three per subcategory). Brand names are invented. |
 | Look | `Spectivis_DemoStore` in `app/code` selects the theme and sets the store name, titles and footer line; the home page shows a banner, the departments and two product sliders. |
 | Load tests | k6 scripts in `loadtest/`: a shopper who buys, a crawler that walks filter combinations, and a page timer. |

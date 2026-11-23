@@ -20,6 +20,9 @@ class Departments implements ArgumentInterface
         'women', 'men', 'kids', 'shoes', 'bags-and-accessories', 'home-and-living', 'outdoor', 'sports-and-fitness',
     ];
 
+    /** URL keys shown first on the home page, in this order; the rest follow by position. */
+    private const LEADING = ['home-and-living', 'outdoor'];
+
     public function __construct(
         private readonly CollectionFactory $collectionFactory,
         private readonly StoreManagerInterface $storeManager
@@ -46,12 +49,22 @@ class Departments implements ArgumentInterface
         foreach ($collection as $category) {
             $key = (string) $category->getUrlKey();
             $departments[] = [
+                'key' => $key,
                 'name' => (string) $category->getName(),
                 'url' => (string) $category->getUrl(),
                 'image' => in_array($key, self::PHOTOS, true) ? 'images/departments/' . $key . '.jpg' : null,
             ];
         }
 
-        return $departments;
+        usort($departments, fn (array $a, array $b): int => $this->rank($a['key']) <=> $this->rank($b['key']));
+
+        return array_map(fn (array $department): array => array_diff_key($department, ['key' => true]), $departments);
+    }
+
+    private function rank(string $key): int
+    {
+        $index = array_search($key, self::LEADING, true);
+
+        return $index === false ? count(self::LEADING) : $index;
     }
 }
